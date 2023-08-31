@@ -49,6 +49,26 @@ namespace CMPG323_Project2.Controllers
             return orderDetail;
         }
 
+        // GET: api/OrderDetails/{orderId}/Products
+        [HttpGet("{orderId}/Orders")]
+        public async Task<ActionResult<IEnumerable<OrderDetail>>> GetOrderProducts(short orderId)
+        {
+            if (_context.Orders == null)
+            {
+                return NotFound();
+            }
+            var order = await _context.Orders.FindAsync(orderId);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            var orderProducts = await _context.OrderDetails.Where(product => product.OrderId == orderId).ToListAsync();
+
+            return orderProducts;
+        }
+
         // PUT: api/OrderDetails/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
