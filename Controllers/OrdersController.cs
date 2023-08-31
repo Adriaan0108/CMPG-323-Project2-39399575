@@ -109,6 +109,26 @@ namespace CMPG323_Project2.Controllers
             return CreatedAtAction("GetOrder", new { id = order.OrderId }, order);
         }
 
+        // GET: api/Customers/{custID}/Orders
+        [HttpGet("{custID}/Orders")]
+        public async Task<ActionResult<IEnumerable<Order>>> GetCustomerOrders(short custID)
+        {
+            if (_context.Customers == null)
+            {
+                return NotFound();
+            }
+            var customer = await _context.Customers.FindAsync(custID);
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            var custOrders = await _context.Orders.Where(order => order.CustomerId == custID).ToListAsync();
+
+            return custOrders;
+        }
+
         // DELETE: api/Orders/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(short id)
