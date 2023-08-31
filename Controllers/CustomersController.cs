@@ -49,6 +49,26 @@ namespace CMPG323_Project2.Controllers
             return customer;
         }
 
+        // GET: api/Orders/{customerId}/Orders
+        [HttpGet("{customerId}/Orders")]
+        public async Task<ActionResult<IEnumerable<Order>>> GetCustomerOrders(short custId)
+        {
+            if (_context.Customers == null)
+            {
+                return NotFound();
+            }
+            var customer = await _context.Orders.FindAsync(custId);
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            var custOrders = await _context.Orders.Where(order => order.CustomerId == custId).ToListAsync();
+
+            return custOrders;
+        }
+
         // PUT: api/Customers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
